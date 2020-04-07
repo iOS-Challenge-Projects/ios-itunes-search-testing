@@ -90,5 +90,57 @@ class SearchResultControllerTests: XCTestCase {
         
     }
     
+    
+    func testInvalidData() {
+        
+        let mockDataLoader = MockDataLoading(data: badJSONData, response: nil, error: nil)
+        
+        //pass the fake URLSession mockDataLoader to use instead of default
+        let controller = SearchResultController(dataLoader: mockDataLoader)
+             
+             //1.Create expectation
+             let expectation = self.expectation(description: "Wait for expectations")
+             
+             controller.performSearch(for: "GarageBand", resultType: .software) {
+                 //Artificial failure for testing purposes
+                 //XCTFail()
+                 
+                  //3.Let the expectation know that it was fulfill
+                 expectation.fulfill()
+             }
+             
+              //2.Timer for expectation to complete
+             //if the fulfill() is not call within the timeout it will fail test
+             wait(for: [expectation], timeout: 5)
+        
+        XCTAssertEqual(controller.searchResults.count, 0, "Expected 0 results")
+    }
+    
+    
+    func testInvalidResults() {
+        
+        let mockDataLoader = MockDataLoading(data: noResultsData, response: nil, error: nil)
+        
+        //pass the fake URLSession mockDataLoader to use instead of default
+        let controller = SearchResultController(dataLoader: mockDataLoader)
+             
+             //1.Create expectation
+             let expectation = self.expectation(description: "Wait for expectations")
+             
+             controller.performSearch(for: "randomApp", resultType: .software) {
+                 //Artificial failure for testing purposes
+                 //XCTFail()
+                 
+                  //3.Let the expectation know that it was fulfill
+                 expectation.fulfill()
+             }
+             
+              //2.Timer for expectation to complete
+             //if the fulfill() is not call within the timeout it will fail test
+             wait(for: [expectation], timeout: 5)
+        
+        XCTAssertEqual(controller.searchResults.count, 0, "Expected 0 results")
+    }
+    
 
 }

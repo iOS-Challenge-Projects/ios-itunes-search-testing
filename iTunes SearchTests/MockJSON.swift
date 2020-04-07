@@ -24,3 +24,32 @@ let goodResultData = """
     ]
 }
 """.data(using: .utf8)!
+
+
+
+let badJSONData = """
+{
+    "resultCount": 2,
+"results": [
+    {
+        "trackName": "GarageBand",
+        "artistName": "Apple",
+    },
+
+    //deleted backet to make it invalid JSON
+
+         "trackName": "Garage Virtual",
+         "artistName": "Nexogen",
+     }
+    ]
+}
+""".data(using: .utf8)!
+
+
+
+let noResultsData = """
+{
+    "resultCount": 0,
+    "results":
+}
+""".data(using: .utf8)!
