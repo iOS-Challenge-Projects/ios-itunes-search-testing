@@ -10,6 +10,16 @@ import Foundation
 
 class SearchResultController {
     
+    //Create a variable
+    var dataLoader: NetworkDataLoader
+    
+    //Since var above is not optional we must init
+    //Set default to URLSession.shared
+    init(dataLoader: NetworkDataLoader = URLSession.shared) {
+        self.dataLoader = dataLoader
+    }
+    
+    
     func performSearch(for searchTerm: String, resultType: ResultType, completion: @escaping () -> Void) {
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -23,7 +33,10 @@ class SearchResultController {
         var request = URLRequest(url: requestURL)
         request.httpMethod = HTTPMethod.get.rawValue
         
-        let dataTask = URLSession.shared.dataTask(with: request) { (data, _, error) in
+        //Instead of URLSession.shared.dataTask(with: request)
+        //and there is no need to save it in a variable or resume()
+        //because this is dont in the loadData() method
+        dataLoader.loadData(using: request) { (data, _, error) in
             
             if let error = error { NSLog("Error fetching data: \(error)") }
             guard let data = data else { completion(); return }
@@ -38,7 +51,6 @@ class SearchResultController {
             
             completion()
         }
-        dataTask.resume()
     }
     
     let baseURL = URL(string: "https://itunes.apple.com/search")!
