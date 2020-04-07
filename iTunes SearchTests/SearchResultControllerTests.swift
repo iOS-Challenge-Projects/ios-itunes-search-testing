@@ -59,5 +59,36 @@ class SearchResultControllerTests: XCTestCase {
         }
     }
     
+    
+    func testValidData() {
+        
+        let mockDataLoader = MockDataLoading(data: goodResultData, response: nil, error: nil)
+        
+        //pass the fake URLSession mockDataLoader to use instead of default
+        let controller = SearchResultController(dataLoader: mockDataLoader)
+             
+             //1.Create expectation
+             let expectation = self.expectation(description: "Wait for expectations")
+             
+             controller.performSearch(for: "GarageBand", resultType: .software) {
+                 //Artificial failure for testing purposes
+                 //XCTFail()
+                 
+                  //3.Let the expectation know that it was fulfill
+                 expectation.fulfill()
+             }
+             
+              //2.Timer for expectation to complete
+             //if the fulfill() is not call within the timeout it will fail test
+             wait(for: [expectation], timeout: 5)
+        XCTAssertEqual(controller.searchResults.count, 2, "Expected 2 results")
+        
+        let firstResult = controller.searchResults[0]
+        
+        XCTAssertEqual(firstResult.title, "GarageBand")
+        XCTAssertEqual(firstResult.artist, "Apple")
+        
+    }
+    
 
 }
